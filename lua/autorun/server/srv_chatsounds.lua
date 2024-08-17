@@ -17,7 +17,7 @@ concommand.Add("list_chatsounds", function()
     PrintTable(SoundDictionary)
 end)
 
-local function HandleSound(plyer, sound)
+local function HandleSound(plyer, sound, pitch)
     for l, m in pairs(PlayerTimers) do
         if l == plyer:AccountID() then
             if m == true then
@@ -26,11 +26,7 @@ local function HandleSound(plyer, sound)
         end
     end
 
-    if plyer:Alive() then
-        plyer:EmitSound(sound, 70, 100, 0.80, CHAN_AUTO)
-    else
-        plyer:EmitSound(sound, 0, 100, 0.80, CHAN_AUTO)
-    end
+    plyer:EmitSound(sound, 70, pitch, 0.80, CHAN_VOICE2)
 
     PlayerTimers[plyer:AccountID()] = true
     timer.Simple(5, function()
@@ -48,10 +44,32 @@ end
 
 hook.Add("PlayerSay", "HandleChatSound", function(sender, text, team)
     if team == false then
+        local allWords = string.Split(text, " ")
+        local pitch = 100
+		
+		if #allWords > 1 then
+			pitch = tonumber(allWords[2]);
+			
+			if pitch != nil then
+				if pitch > 255 then
+					pitch = 255
+				end
+				if pitch < 10 then
+					pitch = 10
+				end
+			else
+				pitch = 100
+			end
+		end
+		
+		if string.lower(allWords[1]) == "." then
+			HandleSound(sender, "null.wav", 100)
+			return text
+		end
+		
         for k, v in pairs(SoundDictionary) do
-            local allWords = string.Split(text, " ")
             if string.lower(allWords[1]) == k then
-                if HandleSound(sender, v) == false then
+                if HandleSound(sender, v, pitch) == false then
                     sender:ChatPrint("[CHATSOUNDS] Please wait 5 seconds between each chat sound!")
                 end
                 return text

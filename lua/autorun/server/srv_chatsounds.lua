@@ -21,7 +21,7 @@ local function HandleSound(plyer, sound)
     for l, m in pairs(PlayerTimers) do
         if l == plyer:AccountID() then
             if m == true then
-                return false
+                --return false
             end
         end
     end

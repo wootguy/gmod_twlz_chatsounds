@@ -1,0 +1,11 @@
+{
+	"title"		:	"TWLZ Chat Sounds",
+	"type"		:	"effects",
+	"tags"		:	[ "fun" ],
+	"ignore"	:
+	[
+		"*.psd",
+		"*.vcproj",
+		"*.git*"
+	]
+}
